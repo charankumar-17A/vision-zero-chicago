@@ -1,7 +1,7 @@
 {
   "pipeline": "streamlit_decision_support_app",
-  "run_id": "20260812T174151Z",
-  "completed_at_utc": "2026-08-12T17:41:51.444033+00:00",
+  "run_id": "20260812T183524Z",
+  "completed_at_utc": "2026-08-12T18:35:24.625249+00:00",
   "is_sample": false,
   "app_summary": {
     "pages_count": 3,
@@ -63,6 +63,12 @@
       "severity": "CRITICAL",
       "passed": true,
       "evidence": "Validation evidence JSONs loaded dynamically (Optimization warnings: 7, Mart warnings: 2)"
+    },
+    {
+      "check": "public_deployment_dataset_and_manifest_integrity",
+      "severity": "CRITICAL",
+      "passed": true,
+      "evidence": "Deployment snapshot CSV files and manifest verified without prohibited data: True"
     }
   ]
 }
