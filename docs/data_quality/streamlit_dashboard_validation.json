@@ -1,14 +1,14 @@
 {
   "pipeline": "streamlit_decision_support_app",
-  "run_id": "20260813T173414Z",
-  "completed_at_utc": "2026-08-13T17:34:15.130406+00:00",
+  "run_id": "20260813T180721Z",
+  "completed_at_utc": "2026-08-13T18:07:21.406797+00:00",
   "is_sample": false,
   "app_summary": {
     "pages_count": 3,
     "default_portfolio_id": "PORT_OFF_BASE_B15M_EQ20",
-    "selected_project_count": 43,
-    "selected_capital_cost_usd": 6704033.805,
-    "achieved_equity_share": 0.41867080725437955,
+    "selected_project_count": 34,
+    "selected_capital_cost_usd": 14988900.0,
+    "achieved_equity_share": 0.47352040509977383,
     "spatial_crs": "EPSG:4326"
   },
   "status": "PASS_WITH_WARNINGS",

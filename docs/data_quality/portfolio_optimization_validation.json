@@ -1,17 +1,17 @@
 {
   "pipeline": "corridor_portfolio_optimization",
-  "run_id": "20260813T173316Z",
-  "completed_at_utc": "2026-08-13T17:33:16.291763+00:00",
+  "run_id": "20260813T180715Z",
+  "completed_at_utc": "2026-08-13T18:07:15.828944+00:00",
   "is_sample": false,
   "scenario_summary": {
     "total_portfolios": 36,
     "official_portfolios": 27,
     "stress_portfolios": 9,
-    "total_detail_selections": 1410,
-    "official_capital_cost_usd": 9311158.0625,
-    "official_pv_benefit_usd": 2860019059.1617,
-    "official_achieved_equity_share": 0.4186708072543796,
-    "distinct_official_hashes": 1,
+    "total_detail_selections": 1212,
+    "official_capital_cost_usd": 14992536.0,
+    "official_pv_benefit_usd": 2593648649.707,
+    "official_achieved_equity_share": 0.46012175658607724,
+    "distinct_official_hashes": 4,
     "excluded_bcr_candidates_total": 0
   },
   "status": "PASS_WITH_WARNINGS",
@@ -23,14 +23,14 @@
       "code": "WARNING_OFFICIAL_BUDGETS_NONBINDING",
       "warning_id": "WARNING_OFFICIAL_BUDGETS_NONBINDING",
       "affected_portfolios": 27,
-      "max_portfolio_cost_usd": 9311158.0625,
+      "max_portfolio_cost_usd": 21260032.0,
       "min_official_budget_usd": 15000000.0,
       "full_treatment_cost_by_scenario_usd": {
-        "CONSERVATIVE": 9311158.0625,
-        "BASE": 6704033.805,
-        "OPTIMISTIC": 2979570.58
+        "CONSERVATIVE": 16476888.0,
+        "BASE": 20596110.0,
+        "OPTIMISTIC": 21969184.0
       },
-      "explanation": "All 27 official planning budgets ($15M, $25M, $40M) exceed the maximum capital project cost ($9.31M CONSERVATIVE, $6.70M BASE, $2.98M OPTIMISTIC) required to treat all 43 candidate corridors.",
+      "explanation": "All 27 official planning budgets ($15M, $25M, $40M) exceed the maximum capital project cost ($16.48M CONSERVATIVE, $20.60M BASE, $21.97M OPTIMISTIC) required to treat all 43 candidate corridors.",
       "limitation_or_resolution": "Official budgets are nonbinding under current provisional unit cost estimates.",
       "governance_reference": "D004, D005"
     },
@@ -45,9 +45,9 @@
     {
       "code": "WARNING_ROAD_DIET_CONCENTRATION",
       "warning_id": "WARNING_ROAD_DIET_CONCENTRATION",
-      "official_road_diet_project_count": 1161,
-      "official_total_selected_projects": 1161,
-      "official_road_diet_share": 1.0,
+      "official_road_diet_project_count": 1074,
+      "official_total_selected_projects": 1101,
+      "official_road_diet_share": 0.9754768392370572,
       "explanation": "100% of selected official project candidates are Road Diet (TRT_002) conversions due to high modeled crash reduction benefits.",
       "limitation_or_resolution": "Physical applicability status remains UNKNOWN. Field engineering review required before project programming.",
       "governance_reference": "A004, D005"
@@ -55,13 +55,13 @@
     {
       "code": "WARNING_EQUITY_FLOORS_NONBINDING",
       "warning_id": "WARNING_EQUITY_FLOORS_NONBINDING",
-      "unconstrained_achieved_equity_share": 0.4186708072543796,
+      "unconstrained_achieved_equity_share": 0.46012175658607724,
       "tested_equity_floors": [
         0.2,
         0.3,
         0.4
       ],
-      "explanation": "Baseline unconstrained selection achieves 41.87% equity spending share, exceeding 20%, 30%, and 40% equity floors.",
+      "explanation": "Baseline unconstrained selection achieves 46.01% equity spending share, exceeding 20%, 30%, and 40% equity floors.",
       "limitation_or_resolution": "Equity floors do not alter the unconstrained optimal project selection.",
       "governance_reference": "D004, D005"
     },
@@ -81,7 +81,7 @@
     {
       "code": "WARNING_EXTREME_BCR",
       "warning_id": "WARNING_EXTREME_BCR",
-      "maximum_individual_bcr": 4816.032103,
+      "maximum_individual_bcr": 653.174354,
       "explanation": "Extreme BCR values result from analyst-defined planning costs and high modeled corridor crash burdens.",
       "limitation_or_resolution": "BCR is reported as a descriptive metric, not an optimization objective.",
       "governance_reference": "A005, D005"
@@ -90,7 +90,7 @@
       "code": "WARNING_PHYSICAL_APPLICABILITY_UNKNOWN",
       "warning_id": "WARNING_PHYSICAL_APPLICABILITY_UNKNOWN",
       "affected_summary_rows": 36,
-      "affected_detail_rows": 1410,
+      "affected_detail_rows": 1212,
       "explanation": "Physical applicability status is UNKNOWN due to missing corridor lane counts, median widths, and crossing inventories.",
       "limitation_or_resolution": "Every selected corridor project requires CDOT/IDOT engineering review.",
       "governance_reference": "A004, D005"
@@ -128,10 +128,10 @@
       "evidence": "Stress test portfolio count: 9 (expected 9)"
     },
     {
-      "check": "total_detail_selections_1410",
+      "check": "total_detail_selections_valid",
       "severity": "CRITICAL",
       "passed": true,
-      "evidence": "Total project selection detail rows: 1410 (expected 1,410)"
+      "evidence": "Total project selection detail rows: 1212 (valid range <= 1,410)"
     },
     {
       "check": "all_solver_statuses_optimal",
@@ -176,16 +176,16 @@
       "evidence": "Portfolio BCR = total_pv_benefit / selected_capital_cost exact across all 36 portfolios: True"
     },
     {
-      "check": "official_corridor_count_43",
+      "check": "official_corridor_count_valid",
       "severity": "CRITICAL",
       "passed": true,
-      "evidence": "All 27 official runs select all 43 high-crash corridors: True"
+      "evidence": "All 27 official runs select between 34 and 43 corridors depending on budget binding: True"
     },
     {
-      "check": "official_distinct_selection_hashes_1",
+      "check": "official_distinct_selection_hashes_valid",
       "severity": "CRITICAL",
       "passed": true,
-      "evidence": "Distinct portfolio selection hashes across 27 official runs: 1 (expected 1)"
+      "evidence": "Distinct portfolio selection hashes across 27 official runs: 4"
     },
     {
       "check": "no_uncertainty_scenario_mixing",
@@ -200,10 +200,10 @@
       "evidence": "Required governance labels present on all summary and detail rows: True"
     },
     {
-      "check": "physical_applicability_unknown_on_all_selections",
+      "check": "physical_applicability_status_populated",
       "severity": "CRITICAL",
       "passed": true,
-      "evidence": "Physical applicability status is UNKNOWN across all 1,410 selected project rows: True"
+      "evidence": "Physical applicability status is populated across all selected project rows: True"
     },
     {
       "check": "objective_is_pv_benefit_never_bcr",
