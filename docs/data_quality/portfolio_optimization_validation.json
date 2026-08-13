@@ -1,7 +1,7 @@
 {
   "pipeline": "corridor_portfolio_optimization",
-  "run_id": "20260812T104902Z",
-  "completed_at_utc": "2026-08-12T10:49:02.364507+00:00",
+  "run_id": "20260813T173316Z",
+  "completed_at_utc": "2026-08-13T17:33:16.291763+00:00",
   "is_sample": false,
   "scenario_summary": {
     "total_portfolios": 36,
@@ -11,7 +11,8 @@
     "official_capital_cost_usd": 9311158.0625,
     "official_pv_benefit_usd": 2860019059.1617,
     "official_achieved_equity_share": 0.4186708072543796,
-    "distinct_official_hashes": 1
+    "distinct_official_hashes": 1,
+    "excluded_bcr_candidates_total": 0
   },
   "status": "PASS_WITH_WARNINGS",
   "downstream_readiness": "READY_FOR_GOVERNANCE_REVIEW",
@@ -215,6 +216,12 @@
       "severity": "CRITICAL",
       "passed": true,
       "evidence": "Every scenario solve executed 3 repeat MILP runs with 100% hash and objective match."
+    },
+    {
+      "check": "bcr_candidate_eligibility_filter_verified",
+      "severity": "CRITICAL",
+      "passed": true,
+      "evidence": "Candidate BCR >= 1.0 eligibility filter applied (D023). Total excluded candidate rows across 36 runs: 0 (0 clean finding)."
     }
   ]
 }
