@@ -1,20 +1,20 @@
 {
   "pipeline": "corridor_treatment_benefits",
-  "run_id": "20260813T184150Z",
-  "completed_at_utc": "2026-08-13T18:41:50.331399+00:00",
+  "run_id": "20260817T145547Z",
+  "completed_at_utc": "2026-08-17T14:55:47.442963+00:00",
   "is_sample": false,
   "scenario_summary": {
     "total_scenario_rows": 387,
     "unique_corridors": 43,
     "unique_treatments": 3,
-    "base_total_pv_benefit_usd": 5837669943.321,
+    "base_total_pv_benefit_usd": 6547741823.829,
     "base_total_capital_cost_usd": 26746110.0,
-    "base_total_net_pv_benefit_usd": 5810923833.321
+    "base_total_net_pv_benefit_usd": 6520995713.829
   },
   "status": "PASS_WITH_WARNINGS",
   "downstream_readiness": "READY_FOR_PORTFOLIO_SCENARIO_REVIEW",
   "critical_failure_count": 0,
-  "warning_count": 4,
+  "warning_count": 5,
   "governance_warnings": [
     {
       "code": "WARNING_PROVISIONAL_SCENARIOS_ONLY",
@@ -68,6 +68,23 @@
       "explanation": "Portfolio optimization remains explicitly out of scope for Phase 4B.",
       "limitation_or_resolution": "Scenarios feed Phase 4C portfolio optimization under $15M, $25M, $40M budgets and equity spending floors.",
       "governance_reference": "D004, D005"
+    },
+    {
+      "code": "WARNING_EXTREME_BCR_ANALYST_COST_SCENARIOS",
+      "warning_id": "WARNING_EXTREME_BCR_ANALYST_COST_SCENARIOS",
+      "analyst_defined_review_threshold_bcr": 1000.0,
+      "affected_rows": 4,
+      "affected_corridor_count": 4,
+      "affected_treatment_ids": [
+        "TRT_001"
+      ],
+      "affected_scenario_levels": [
+        "OPTIMISTIC"
+      ],
+      "maximum_bcr": 1568.6526,
+      "explanation": "4 scenario rows exceed BCR 1000 due to analyst-defined planning costs, unknown physical applicability, and high modeled corridor crash burdens.",
+      "limitation_or_resolution": "Extreme BCRs result from analyst-defined planning costs, unknown physical applicability, and high modeled corridor crash burdens. These values cannot be interpreted as expected City project returns.",
+      "governance_reference": "A005, D005"
     }
   ],
   "checks": [

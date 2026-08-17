@@ -1,16 +1,16 @@
 {
   "pipeline": "corridor_portfolio_optimization",
-  "run_id": "20260813T184156Z",
-  "completed_at_utc": "2026-08-13T18:41:56.317557+00:00",
+  "run_id": "20260817T145559Z",
+  "completed_at_utc": "2026-08-17T14:55:59.495639+00:00",
   "is_sample": false,
   "scenario_summary": {
     "total_portfolios": 36,
     "official_portfolios": 27,
     "stress_portfolios": 9,
-    "total_detail_selections": 1212,
-    "official_capital_cost_usd": 14992536.0,
-    "official_pv_benefit_usd": 2593648649.707,
-    "official_achieved_equity_share": 0.46012175658607724,
+    "total_detail_selections": 1362,
+    "official_capital_cost_usd": 14998416.0,
+    "official_pv_benefit_usd": 2600662101.3660994,
+    "official_achieved_equity_share": 0.44424371213600156,
     "distinct_official_hashes": 4,
     "excluded_bcr_candidates_total": 0
   },
@@ -45,9 +45,9 @@
     {
       "code": "WARNING_ROAD_DIET_CONCENTRATION",
       "warning_id": "WARNING_ROAD_DIET_CONCENTRATION",
-      "official_road_diet_project_count": 1074,
-      "official_total_selected_projects": 1101,
-      "official_road_diet_share": 0.9754768392370572,
+      "official_road_diet_project_count": 1071,
+      "official_total_selected_projects": 1152,
+      "official_road_diet_share": 0.9296875,
       "explanation": "100% of selected official project candidates are Road Diet (TRT_002) conversions due to high modeled crash reduction benefits.",
       "limitation_or_resolution": "Physical applicability status remains UNKNOWN. Field engineering review required before project programming.",
       "governance_reference": "A004, D005"
@@ -55,13 +55,13 @@
     {
       "code": "WARNING_EQUITY_FLOORS_NONBINDING",
       "warning_id": "WARNING_EQUITY_FLOORS_NONBINDING",
-      "unconstrained_achieved_equity_share": 0.46012175658607724,
+      "unconstrained_achieved_equity_share": 0.44424371213600156,
       "tested_equity_floors": [
         0.2,
         0.3,
         0.4
       ],
-      "explanation": "Baseline unconstrained selection achieves 46.01% equity spending share, exceeding 20%, 30%, and 40% equity floors.",
+      "explanation": "Baseline unconstrained selection achieves 44.42% equity spending share, exceeding 20%, 30%, and 40% equity floors.",
       "limitation_or_resolution": "Equity floors do not alter the unconstrained optimal project selection.",
       "governance_reference": "D004, D005"
     },
@@ -81,7 +81,7 @@
     {
       "code": "WARNING_EXTREME_BCR",
       "warning_id": "WARNING_EXTREME_BCR",
-      "maximum_individual_bcr": 653.174354,
+      "maximum_individual_bcr": 918.568207,
       "explanation": "Extreme BCR values result from analyst-defined planning costs and high modeled corridor crash burdens.",
       "limitation_or_resolution": "BCR is reported as a descriptive metric, not an optimization objective.",
       "governance_reference": "A005, D005"
@@ -90,7 +90,7 @@
       "code": "WARNING_PHYSICAL_APPLICABILITY_UNKNOWN",
       "warning_id": "WARNING_PHYSICAL_APPLICABILITY_UNKNOWN",
       "affected_summary_rows": 36,
-      "affected_detail_rows": 1212,
+      "affected_detail_rows": 1362,
       "explanation": "Physical applicability status is UNKNOWN due to missing corridor lane counts, median widths, and crossing inventories.",
       "limitation_or_resolution": "Every selected corridor project requires CDOT/IDOT engineering review.",
       "governance_reference": "A004, D005"
@@ -131,7 +131,7 @@
       "check": "total_detail_selections_valid",
       "severity": "CRITICAL",
       "passed": true,
-      "evidence": "Total project selection detail rows: 1212 (valid range <= 1,410)"
+      "evidence": "Total project selection detail rows: 1362 (valid range <= 1,410)"
     },
     {
       "check": "all_solver_statuses_optimal",
