@@ -26,32 +26,25 @@ from dashboard.streamlit.components import (
     format_equity_flag,
     format_ksi_compact,
     format_percent,
-    render_economic_caveat_banner,
-    render_engineering_review_banner,
     render_governance_footer,
     render_governance_header_banner,
     render_page_header,
     render_sidebar_controls,
 )
 from dashboard.streamlit.data_access import (
-    compute_portfolio_stability,
     evaluate_portfolio_scenario,
-    get_selected_portfolio_benefits,
-    get_single_portfolio_summary,
     load_corridor_master,
     load_portfolio_summary,
-    load_project_selections,
     load_treatment_benefits,
 )
 
 render_page_header(
     "Portfolio overview",
-    "Interactive planning-level decision support for provisional high-crash corridor treatment portfolios.",
+    "Planning-level decision support for provisional high-crash corridor treatment portfolios.",
 )
 
 # Load serving datasets
 df_summary = load_portfolio_summary()
-df_selections = load_project_selections()
 df_master = load_corridor_master()
 df_benefits = load_treatment_benefits()
 
@@ -74,10 +67,12 @@ render_governance_header_banner(
     scenario_params=scenario_params,
 )
 
+# -----------------------------------------------------------------------------
+# Section 1 — Core Portfolio Metrics
+# -----------------------------------------------------------------------------
 st.markdown("---")
 st.subheader("1. Core portfolio metrics")
 
-# Hero KPI Cards (4 primary decision metrics)
 col1, col2, col3, col4 = st.columns(4)
 
 total_corridors_count = len(df_master)
@@ -121,7 +116,7 @@ utilization_ratio = s_row["selected_capital_cost"] / s_row["budget_usd"] if s_ro
 tot_ksi_2026 = df_master["annual_forecast_ksi_crashes_2026"].sum()
 tot_averted = df_sel_benefits["crashes_averted_total"].sum()
 
-with st.expander("View secondary metrics and economic indicators", expanded=False):
+with st.expander("Secondary metrics and economic indicators", expanded=False):
     sec1, sec2, sec3 = st.columns(3)
     with sec1:
         st.metric("Budget utilization", format_percent(utilization_ratio), help="Selected capital cost divided by planning budget ceiling.")
@@ -135,14 +130,13 @@ with st.expander("View secondary metrics and economic indicators", expanded=Fals
         st.metric("KSI benefit share in high-SVI areas", f"{high_svi_ksi_share:.1f}%", help=f"Denominator: Total annual KSI crashes avoided across funded corridors (~{annual_ksi:.1f}/yr). Numerator: Annual KSI avoided in high-SVI corridors (~{high_svi_ksi:.1f}/yr). SVI is used as a spatial equity proxy; it does not directly measure safety benefit equity.")
 
 # -----------------------------------------------------------------------------
-# Section 1 — 2026 Corridor Risk Forecast (Pre-Treatment Baseline)
+# Section 2 — 2026 Corridor Risk Forecast — Pre-Treatment Baseline
 # -----------------------------------------------------------------------------
 st.markdown("---")
-st.subheader("1. 2026 corridor risk forecast — pre-treatment baseline")
+st.subheader("2. 2026 corridor risk forecast — pre-treatment baseline")
 st.caption(
-    "Modelled 2026 annual crash and KSI (Fatal + Serious Injury) predictions for all 43 high-crash corridors, "
-    "before any safety treatment is applied. Demand risk rank is derived from the KSI forecast. "
-    "These forecasts are the analytical baseline against which treatment benefits and portfolio optimization operate."
+    "Modelled 2026 annual crash and KSI predictions for all 43 high-crash corridors before safety treatment. "
+    "Demand risk rank is derived from the KSI forecast and serves as the baseline for treatment evaluation."
 )
 
 _funded_ids = set(df_sel_benefits["corridor_id"]) if not df_sel_benefits.empty else set()
@@ -157,11 +151,11 @@ df_forecast = df_master[[
 ]].copy()
 
 df_forecast["portfolio_status"] = df_forecast["corridor_id"].apply(
-    lambda cid: "✅ Funded" if cid in _funded_ids else "⏸️ Deferred"
+    lambda cid: "Funded" if cid in _funded_ids else "Deferred"
 )
 df_forecast["equity_classification_A_weighted_ge_0_75"] = df_forecast[
     "equity_classification_A_weighted_ge_0_75"
-].apply(lambda v: "✅ Yes" if v else "—")
+].apply(lambda v: "Yes" if v else "—")
 df_forecast = df_forecast.sort_values("demand_risk_rank_2026")
 df_forecast.columns = [
     "Corridor ID",
@@ -180,7 +174,7 @@ st.dataframe(
     }),
     width="stretch",
     hide_index=True,
-    height=350,
+    height=340,
 )
 
 _net_total_2026 = float(df_master["annual_forecast_total_crashes_2026"].sum())
@@ -191,11 +185,146 @@ st.caption(
 )
 
 # -----------------------------------------------------------------------------
-# Section 2 — Selected Projects Detail Register
+# Section 3 — Funded Corridors — Benefit-Cost Efficiency
 # -----------------------------------------------------------------------------
 st.markdown("---")
-st.subheader("2. Selected projects detail register")
-st.caption("Analytical planning portfolio; individual project engineering status is provisionally UNKNOWN (Engineering review required). Subject to engineering review and implementation approval.")
+st.subheader("3. Funded corridors — benefit-cost efficiency")
+st.caption(
+    "Funded corridors ranked by individual Benefit-Cost Ratio (BCR). "
+    "Evaluates estimated life-safety and economic return per dollar of initial construction investment."
+)
+
+df_eff = df_sel_benefits.copy()
+df_eff["bcr_float"] = df_eff["benefit_cost_ratio"].astype(float)
+df_eff = df_eff.sort_values("bcr_float", ascending=False)
+
+# Top 15 decision-relevant corridors for readable display
+df_top = df_eff.head(15).copy()
+
+# High-SVI priority: #0D9488 (teal accent), Standard priority: #64748B (neutral slate)
+bar_colors = ["#0D9488" if eq else "#64748B" for eq in df_top["equity_area_flag"]]
+
+# Clean corridor label: ID + Name
+corridor_labels = df_top["corridor_id"] + " " + df_top["corridor_name"]
+
+fig_bcr = go.Figure()
+fig_bcr.add_trace(go.Bar(
+    y=corridor_labels,
+    x=df_top["bcr_float"],
+    orientation="h",
+    marker_color=bar_colors,
+    text=[f"{bcr:.1f}×" for bcr in df_top["bcr_float"]],
+    textposition="outside",
+    hovertemplate="<b>%{y}</b><br>BCR: %{x:.1f}×<extra></extra>",
+))
+
+fig_bcr.update_layout(
+    height=480,
+    margin=dict(l=10, r=50, t=10, b=10),
+    xaxis=dict(title="Individual Project Benefit-Cost Ratio (BCR)", showgrid=True, gridcolor="#E2E8F0", tickfont=dict(color="#1E293B", size=11)),
+    yaxis=dict(title="", tickfont=dict(size=11, color="#1E293B"), autorange="reversed"),
+    font=dict(color="#1E293B"),
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+)
+
+legend_html = """
+<div style="display:flex; align-items:center; gap:20px; font-size:12.5px; margin-top:6px; margin-bottom:8px; padding:6px 14px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:6px; width:fit-content; box-shadow:0 1px 2px rgba(15,23,42,0.03);">
+    <span style="font-weight:700; color:#0F172A;">Corridor Priority:</span>
+    <span style="display:inline-flex; align-items:center; gap:7px;">
+        <span style="width:13px; height:13px; background-color:#0D9488; border-radius:3px; display:inline-block;"></span>
+        <span style="font-weight:500; color:#0F172A;">High-SVI Priority Corridor</span>
+    </span>
+    <span style="display:inline-flex; align-items:center; gap:7px;">
+        <span style="width:13px; height:13px; background-color:#64748B; border-radius:3px; display:inline-block;"></span>
+        <span style="font-weight:500; color:#0F172A;">Standard Priority Corridor</span>
+    </span>
+</div>
+"""
+st.markdown(legend_html, unsafe_allow_html=True)
+st.plotly_chart(fig_bcr, width="stretch", config={"displayModeBar": False})
+
+st.caption(
+    "Note on interpretation: Bar length and numeric value indicate individual Benefit-Cost Ratio (BCR). "
+    "Bar color represents spatial equity priority classification only (Teal = High-SVI Priority, Slate = Standard Priority), "
+    "not relative performance or funding status."
+)
+
+top_count = len(df_top)
+top_high_svi = int(df_top["equity_area_flag"].sum())
+tot_funded = len(df_eff)
+tot_high_svi = int(df_eff["equity_area_flag"].sum())
+
+st.caption(
+    f"Analytical takeaway: High-SVI priority corridors account for {top_high_svi} of the top {top_count} "
+    f"benefit-cost investments (and {tot_high_svi} of the {tot_funded} funded corridors across the full portfolio). "
+    f"Complete portfolio ranking of all {tot_funded} funded corridors is provided in the Selected Projects Detail Register below."
+)
+
+st.caption(
+    "Methodological note: Portfolio selection is determined by the optimization model under budget, "
+    "equity, treatment, and feasibility constraints—not by BCR ranking alone."
+)
+
+# Compact Equity Ledger by SVI Quartile
+st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+df_master_svi = df_master[["corridor_id", "corridor_length_weighted_svi"]].copy()
+df_master_svi["svi_quartile"] = pd.qcut(
+    df_master_svi["corridor_length_weighted_svi"],
+    q=4,
+    labels=[
+        "Q1 — Lowest vulnerability",
+        "Q2",
+        "Q3",
+        "Q4 — Highest vulnerability",
+    ],
+)
+df_sel_svi = df_sel_benefits.merge(df_master_svi, on="corridor_id", how="left")
+eq_ledger = (
+    df_sel_svi.groupby("svi_quartile", observed=False)
+    .agg(
+        funded_projects=("corridor_id", "count"),
+        capital_cost=("capital_project_cost", "sum"),
+        ksi_avoided=("crashes_averted_ksi", "sum"),
+    )
+    .reset_index()
+)
+total_sel_cost = float(df_sel_benefits["capital_project_cost"].sum()) if not df_sel_benefits.empty else 1.0
+eq_ledger["capital_share"] = (eq_ledger["capital_cost"] / total_sel_cost * 100)
+
+df_ledger_display = pd.DataFrame({
+    "SVI Quartile": eq_ledger["svi_quartile"],
+    "Funded Corridors": eq_ledger["funded_projects"],
+    "Capital Allocated": eq_ledger["capital_cost"].apply(format_currency),
+    "Capital Share": eq_ledger["capital_share"].apply(lambda x: f"{x:.1f}%"),
+    "Estimated KSI Avoided / Yr": eq_ledger["ksi_avoided"].apply(lambda x: f"~{x:.1f} / yr"),
+})
+
+with st.container():
+    st.markdown("#### Equity ledger · SVI quartile")
+    st.dataframe(df_ledger_display, width="stretch", hide_index=True)
+    high_vuln_cost = float(eq_ledger.loc[eq_ledger["svi_quartile"].isin(["Q3", "Q4 — Highest vulnerability"]), "capital_cost"].sum())
+    high_vuln_share = (high_vuln_cost / total_sel_cost * 100) if total_sel_cost > 0 else 0.0
+    high_vuln_ksi = float(eq_ledger.loc[eq_ledger["svi_quartile"].isin(["Q3", "Q4 — Highest vulnerability"]), "ksi_avoided"].sum())
+    st.caption(
+        f"Analytical takeaway: Higher-vulnerability corridors (Q3 + Q4) receive {high_vuln_share:.1f}% of allocated capital "
+        f"({format_currency(high_vuln_cost)}) and account for ~{high_vuln_ksi:.1f} annual KSI avoided, "
+        f"substantially exceeding the portfolio equity floor objective."
+    )
+    st.caption(
+        "Methodological distinction: SVI quartile distribution is a statistical analysis across the full 43-corridor network; "
+        "the High-SVI policy classification is a binary spatial equity rule applied during optimization (SVI ≥ 0.75)."
+    )
+
+# -----------------------------------------------------------------------------
+# Section 4 — Selected Projects Detail Register
+# -----------------------------------------------------------------------------
+st.markdown("---")
+st.subheader("4. Selected projects detail register")
+st.caption(
+    "Analytical planning portfolio; individual project engineering status is provisionally UNKNOWN (Engineering review required). "
+    "Subject to engineering review and implementation approval."
+)
 
 df_table = df_sel_benefits[[
     "corridor_id",
@@ -235,328 +364,5 @@ st.dataframe(
     height=320,
 )
 
-# -----------------------------------------------------------------------------
-# Section 3 — Portfolio Robustness Across Scenarios (Decision DEC-07)
-# -----------------------------------------------------------------------------
-st.markdown("---")
-st.subheader("3. Portfolio robustness across scenarios")
-st.caption("Cross-scenario selection frequencies from precomputed optimization runs. Identifies robust 'core' investments versus scenario-sensitive projects.")
-
-st.markdown(
-    "Analyze how frequently each corridor-treatment project is selected across precomputed optimization scenarios. "
-    "Projects consistently selected across varying budgets, equity floors, and CMF uncertainty levels represent robust capital priorities."
-)
-
-stab_col1, stab_col2 = st.columns([1, 1])
-with stab_col1:
-    scope_display = st.selectbox(
-        "Scenario scope for stability analysis",
-        options=[
-            "Official planning scenarios (27 runs)",
-            "All canonical scenarios (36 runs)",
-            "All precomputed scenarios (192 runs)",
-        ],
-        index=0,
-        help="Select scenario set: Official planning runs ($15M, $25M, $40M), Canonical runs (+ stress tests), or All precomputed mart scenarios (+ What-if grid).",
-    )
-    scope_key = "OFFICIAL" if "27" in scope_display else ("CANONICAL" if "36" in scope_display else "ALL")
-
-with stab_col2:
-    tier_filter = st.selectbox(
-        "Filter by stability tier",
-        options=[
-            "All tiers",
-            "Core (selected in most scenarios)",
-            "Conditional (selected in some scenarios)",
-            "Scenario-sensitive (selected rarely)",
-        ],
-        index=0,
-        help="Filter projects by stability classification tier.",
-    )
-
-df_stability = compute_portfolio_stability(df_selections, df_summary, scenario_scope=scope_key)
-total_candidates_count = len(df_stability)
-total_scenarios_count = int(df_stability["total_scenarios"].iloc[0]) if not df_stability.empty else 0
-core_count = int((df_stability["stability_tier"] == "Core").sum())
-cond_count = int((df_stability["stability_tier"] == "Conditional").sum())
-sens_count = int((df_stability["stability_tier"] == "Scenario-sensitive").sum())
-
-st.caption(f"Stability is evaluated across {total_candidates_count} corridor-treatment candidates selected across the {total_scenarios_count} {scope_display.lower()}.")
-
-sm1, sm2, sm3, sm4 = st.columns(4)
-with sm1:
-    st.metric("Core candidates", f"{core_count}", help=f"Selected in >=70% of evaluated scenarios ({core_count} of {total_candidates_count} candidates). Robust priority across varying budget ceilings and uncertainty levels.")
-with sm2:
-    st.metric("Conditional candidates", f"{cond_count}", help=f"Selected in 30%–69% of evaluated scenarios ({cond_count} of {total_candidates_count} candidates). Viable under specific budget or equity floor conditions.")
-with sm3:
-    st.metric("Scenario-sensitive candidates", f"{sens_count}", help=f"Selected in <30% of evaluated scenarios ({sens_count} of {total_candidates_count} candidates). Narrow viability (e.g. selected only in high-budget or low-cost scenarios).")
-with sm4:
-    scen_label = "Official scenarios evaluated" if scope_key == "OFFICIAL" else ("Canonical scenarios evaluated" if scope_key == "CANONICAL" else "Precomputed scenarios evaluated")
-    st.metric(scen_label, f"{total_scenarios_count}", help=f"Total precomputed optimization scenarios evaluated in {scope_display}.")
-
-if tier_filter.startswith("Core"):
-    df_stab_display = df_stability[df_stability["stability_tier"] == "Core"].copy()
-elif tier_filter.startswith("Conditional"):
-    df_stab_display = df_stability[df_stability["stability_tier"] == "Conditional"].copy()
-elif tier_filter.startswith("Scenario-sensitive"):
-    df_stab_display = df_stability[df_stability["stability_tier"] == "Scenario-sensitive"].copy()
-else:
-    df_stab_display = df_stability.copy()
-
-df_stab_table = df_stab_display[[
-    "corridor_id",
-    "corridor_name",
-    "treatment_name",
-    "stability_tier",
-    "selection_display",
-    "selection_rate",
-    "equity_area_flag",
-    "capital_project_cost",
-]].copy()
-
-df_stab_table["equity_area_flag"] = df_stab_table["equity_area_flag"].apply(format_equity_flag)
-df_stab_table["selection_rate"] = df_stab_table["selection_rate"].apply(lambda r: f"{r * 100:.1f}%")
-
-df_stab_table.columns = [
-    "Corridor ID",
-    "Corridor Name",
-    "Recommended Treatment",
-    "Stability Tier",
-    "Scenario Selection Frequency",
-    "Selection Rate",
-    "High-SVI Priority Area",
-    "Estimated Capital Cost",
-]
-
-st.dataframe(
-    df_stab_table.style.format({
-        "Estimated Capital Cost": "${:,.0f}",
-    }),
-    width="stretch",
-    hide_index=True,
-    height=280,
-)
-
-# -----------------------------------------------------------------------------
-# Section 4 — Benefit-Cost Efficiency View (Decision DEC-02)
-# -----------------------------------------------------------------------------
-st.markdown("---")
-st.subheader("4. Funded corridors — benefit-cost efficiency")
-st.caption(
-    "Corridors ranked by individual Benefit-Cost Ratio (BCR). "
-    "The optimization selects the mathematically optimal portfolio under the stated objective, budget, equity, treatment, and screening constraints."
-)
-
-df_eff = df_sel_benefits.copy()
-df_eff["bcr_float"] = df_eff["benefit_cost_ratio"].astype(float)
-df_eff = df_eff.sort_values("bcr_float", ascending=True)  # Ascending for horizontal bar chart display
-
-colors = ["#276749" if eq else "#1B4F8A" for eq in df_eff["equity_area_flag"]]
-
-fig_bcr = go.Figure()
-fig_bcr.add_trace(go.Bar(
-    y=df_eff["corridor_name"],
-    x=df_eff["bcr_float"],
-    orientation="h",
-    marker_color=colors,
-    text=[f"BCR {bcr:.1f} (${int(c/1e3)}k)" for bcr, c in zip(df_eff["bcr_float"], df_eff["capital_project_cost"])],
-    textposition="auto",
-))
-
-fig_bcr.update_layout(
-    title=dict(
-        text="Funded Corridors — Benefit-Cost Efficiency",
-        font=dict(size=14),
-    ),
-    height=max(400, len(df_eff) * 20),
-    margin=dict(l=20, r=20, t=40, b=20),
-    xaxis=dict(title="Individual Project Benefit-Cost Ratio (BCR)"),
-    yaxis=dict(title=""),
-)
-
-st.plotly_chart(fig_bcr, width="stretch")
-
-# Legend indicator
-c_leg1, c_leg2 = st.columns(2)
-with c_leg1:
-    st.markdown("🟢 **Green bars**: High-SVI Equity Priority Corridors")
-with c_leg2:
-    st.markdown("🔵 **Blue bars**: Standard Priority Corridors")
-
-with st.expander("Comprehensive severity & economic accounts (Detailed KABCO breakdowns)", expanded=False):
-    k_val = float(df_sel_benefits["crashes_averted_k"].sum())
-    a_val = float(df_sel_benefits["crashes_averted_a"].sum())
-    ksi_val = float(df_sel_benefits["crashes_averted_ksi"].sum())
-    b_val = float(df_sel_benefits["crashes_averted_b"].sum())
-    c_val = float(df_sel_benefits["crashes_averted_c"].sum())
-    o_val = float(df_sel_benefits["crashes_averted_o"].sum())
-    tot_val = float(df_sel_benefits["crashes_averted_total"].sum())
-
-    st.markdown("#### Comprehensive annual crash severity breakdown")
-    sev_df = pd.DataFrame([
-        {"Outcome Tier": "Primary (Life-Safety)", "Severity Category": "Fatal crashes (K)", "Estimated Crashes Avoided / Yr": f"{k_val:.2f}", "Share of Total": f"{(k_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Primary (Life-Safety)", "Severity Category": "Serious injury crashes (A)", "Estimated Crashes Avoided / Yr": f"{a_val:.2f}", "Share of Total": f"{(a_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Primary (Life-Safety)", "Severity Category": "Combined Vision Zero KSI (K + A)", "Estimated Crashes Avoided / Yr": f"{ksi_val:.2f}", "Share of Total": f"{(ksi_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Secondary (Non-Severe)", "Severity Category": "Minor injury crashes (B)", "Estimated Crashes Avoided / Yr": f"{b_val:.2f}", "Share of Total": f"{(b_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Secondary (Non-Severe)", "Severity Category": "Possible injury crashes (C)", "Estimated Crashes Avoided / Yr": f"{c_val:.2f}", "Share of Total": f"{(c_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Secondary (Property Damage)", "Severity Category": "Property damage only crashes (PDO / O)", "Estimated Crashes Avoided / Yr": f"{o_val:.2f}", "Share of Total": f"{(o_val/tot_val)*100:.2f}%"},
-        {"Outcome Tier": "Total", "Severity Category": "All-severity crashes (Total)", "Estimated Crashes Avoided / Yr": f"{tot_val:,.2f}", "Share of Total": "100.00%"},
-    ])
-    st.dataframe(sev_df, width="stretch", hide_index=True)
-
-# -----------------------------------------------------------------------------
-# Section 5 — What-if Capital Planner
-# -----------------------------------------------------------------------------
-st.markdown("---")
-st.subheader("5. What-if capital planner")
-st.caption("Interactive optimization engine: evaluate alternative capital budgets and equity spending floors under active cost and CMF assumptions.")
-
-st.warning(
-    "**Planning disclaimer:** The what-if planner runs a fresh mathematical optimization (MILP) at runtime "
-    "over planning-level costs, CMF-based crash estimates, and probabilistic crash forecasts. Results are "
-    "**illustrative decision-support scenarios — not official City budgets, commitments, or engineering approvals.** "
-    "Physical applicability for most corridors remains **UNKNOWN pending engineering field review**; screened "
-    "inapplicable corridors are excluded. Final capital authority stays with City staff and engineering teams."
-)
-
-st.markdown(
-    "Explore how capital allocation, corridor funding rosters, and equity outcomes adjust under different budget ceilings and equity floors."
-)
-
-wif_budgets = [
-    2000000.0, 3000000.0, 4000000.0, 5000000.0, 6000000.0,
-    7000000.0, 8000000.0, 9000000.0, 10000000.0, 11000000.0,
-    12000000.0, 13000000.0, 14000000.0, 15000000.0, 16000000.0,
-    17000000.0, 18000000.0, 19000000.0, 20000000.0, 21000000.0,
-    22000000.0, 23000000.0, 24000000.0, 25000000.0, 30000000.0,
-    40000000.0,
-]
-wif_equities = [0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
-
-
-default_wb_val = scenario_params["budget"] if scenario_params["budget"] in wif_budgets else 15000000.0
-default_wb_idx = wif_budgets.index(default_wb_val)
-
-default_we_val = scenario_params["equity_floor"] if scenario_params["equity_floor"] in wif_equities else 0.20
-default_we_idx = wif_equities.index(default_we_val)
-
-wif_col1, wif_col2 = st.columns(2)
-with wif_col1:
-    user_budget = st.selectbox(
-        "Select planning budget ceiling",
-        options=wif_budgets,
-        index=default_wb_idx,
-        key="wif_budget_select",
-        format_func=lambda b: f"${int(b / 1e6)}M" if b >= 1e6 else f"${int(b / 1e3)}k",
-        help="Select a planning budget ceiling for what-if evaluation ($2M to $40M).",
-    )
-with wif_col2:
-    user_equity = st.selectbox(
-        "Select minimum equity spending floor",
-        options=wif_equities,
-        index=default_we_idx,
-        key="wif_equity_select",
-        format_func=lambda ef: f"{int(round(ef * 100))}%",
-        help="Select minimum percentage of funding reserved for high-SVI equity priority corridors (15% to 40%).",
-    )
-
-wif_s_row, wif_sel_benefits = evaluate_portfolio_scenario(
-    budget=float(user_budget),
-    equity_floor=float(user_equity),
-    cost_case=scenario_params["cost_case"],
-    cmf_case=scenario_params["cmf_case"],
-    df_benefits=df_benefits,
-)
-
-target_portfolio_id = str(wif_s_row["portfolio_id"])
-wif_ksi = wif_sel_benefits["crashes_averted_ksi"].sum() if not wif_sel_benefits.empty else 0.0
-
-st.info(
-    f"**What-if scenario evaluated:** Budget ceiling: **&dollar;{int(wif_s_row['budget_usd']/1e6)}M** | "
-    f"Equity Floor: **{int(round(wif_s_row['equity_floor']*100))}%** | "
-    f"Cost: **{scenario_params['cost_case'].title()}** | "
-    f"CMF: **{scenario_params['cmf_case'].title()}** | "
-    f"Scenario ID: `{target_portfolio_id}`"
-)
-
-wc1, wc2, wc3, wc4 = st.columns(4)
-with wc1:
-    st.metric(
-        "Estimated capital cost",
-        format_currency_compact(wif_s_row["selected_capital_cost"]),
-        help=f"Planning-level estimate: {format_currency(wif_s_row['selected_capital_cost'])} total initial construction cost for shortlisted corridor projects.",
-    )
-with wc2:
-    st.metric(
-        "Corridors funded",
-        f"{int(wif_s_row['selected_project_count'])} of {total_corridors_count}",
-        help=f"Denominator: {total_corridors_count} candidate corridors in the network. Numerator: {int(wif_s_row['selected_project_count'])} corridors selected in what-if portfolio. Subject to engineering review.",
-    )
-with wc3:
-    st.metric(
-        "Estimated KSI avoided / year",
-        f"{format_ksi_compact(wif_ksi)} / yr",
-        help=f"Denominator: {int(wif_s_row['selected_project_count'])} funded corridors in what-if portfolio. Severity scope: Fatal (K) + Serious injury (A) crashes. Planning-level estimate: ~{wif_ksi:,.1f} KSI avoided / yr.",
-    )
-with wc4:
-    st.metric(
-        "High-SVI capital share",
-        format_percent(wif_s_row["achieved_equity_share"]),
-        help="Denominator: Selected what-if capital cost. Numerator: Capital allocated to high-SVI corridors. Measures capital spending input only; not proof of equitable safety outcomes. SVI is used as a spatial equity proxy.",
-    )
-
-wif_table = wif_sel_benefits[[
-    "corridor_id",
-    "corridor_name",
-    "treatment_name",
-    "capital_project_cost",
-    "crashes_averted_total",
-    "crashes_averted_k",
-    "crashes_averted_a",
-    "equity_area_flag",
-    "physical_applicability_status",
-]].copy()
-wif_table["equity_area_flag"] = wif_table["equity_area_flag"].apply(format_equity_flag)
-wif_table["physical_applicability_status"] = wif_table["physical_applicability_status"].apply(format_engineering_status)
-wif_table.columns = [
-    "Corridor ID",
-    "Corridor Name",
-    "Recommended Treatment",
-    "Estimated Capital Cost",
-    "Estimated All-Severity Crashes Avoided / Yr",
-    "Estimated Fatal (K) Avoided / Yr",
-    "Estimated Serious Injury (A) Avoided / Yr",
-    "High-SVI Priority Area",
-    "Engineering Status",
-]
-
-st.dataframe(
-    wif_table.style.format({
-        "Estimated Capital Cost": "${:,.0f}",
-        "Estimated All-Severity Crashes Avoided / Yr": "{:,.2f}",
-        "Estimated Fatal (K) Avoided / Yr": "{:,.2f}",
-        "Estimated Serious Injury (A) Avoided / Yr": "{:,.2f}",
-    }),
-    width="stretch",
-    hide_index=True,
-    height=280,
-)
-
-csv_data = wif_table.to_csv(index=False).encode("utf-8")
-if st.download_button(
-    label=f"Download what-if portfolio CSV (${int(wif_s_row['budget_usd']/1e6)}M / {int(round(wif_s_row['equity_floor']*100))}% equity)",
-    data=csv_data,
-    file_name=f"vision_zero_what_if_{target_portfolio_id}.csv",
-    mime="text/csv",
-):
-    try:
-        from dashboard.streamlit.analytics import track_portfolio_exported
-        track_portfolio_exported(
-            scenario_id=target_portfolio_id,
-            budget=float(wif_s_row["budget_usd"]),
-        )
-    except Exception:
-        pass
-
-# Standardized Consolidated Governance Footer (Decision DEC-04)
+# Standardized Consolidated Governance Footer
 render_governance_footer()

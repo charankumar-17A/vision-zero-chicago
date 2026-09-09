@@ -16,7 +16,7 @@ if str(REPO_ROOT) not in sys.path:
 import streamlit as st
 
 st.set_page_config(
-    page_title="Vision Zero Chicago - Decision Support System",
+    page_title="Vision Zero Chicago — Safety Capital Investment Prioritization",
     layout="wide",
     initial_sidebar_state="expanded",
 )

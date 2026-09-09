@@ -14,7 +14,7 @@ import streamlit as st
 def inject_global_css() -> None:
     """Inject global typography and visual consistency CSS.
 
-    Establishes a cohesive, minimal dark executive analytics theme across all
+    Establishes a cohesive, minimal light executive analytics theme across all
     four application pages. No user-supplied content is embedded.
     """
     st.markdown(
@@ -23,8 +23,8 @@ def inject_global_css() -> None:
         /* ── Global Font Hierarchy & App Background ─────────────────────── */
         html, body, .stApp {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0B0F19;
-            color: #CBD5E1;
+            background-color: #F8FAFC !important;
+            color: #1E293B !important;
         }
 
         /* ── Preserve Material Icons & Streamlit Glyphs ─────────────────── */
@@ -40,7 +40,7 @@ def inject_global_css() -> None:
             letter-spacing: -0.3px !important;
             margin-top: 0.1rem !important;
             margin-bottom: 0.2rem !important;
-            color: #F8FAFC !important;
+            color: #0F172A !important;
         }
         h2 {
             font-size: 19px !important;
@@ -48,34 +48,34 @@ def inject_global_css() -> None:
             letter-spacing: -0.2px !important;
             margin-top: 0.2rem !important;
             margin-bottom: 0.2rem !important;
-            color: #F1F5F9 !important;
+            color: #1E293B !important;
         }
         h3 {
             font-size: 16px !important;
             font-weight: 600 !important;
             margin-top: 0.8rem !important;
             margin-bottom: 0.3rem !important;
-            color: #E2E8F0 !important;
+            color: #1E293B !important;
         }
         h4 {
             font-size: 14px !important;
             font-weight: 600 !important;
             margin-top: 0.5rem !important;
             margin-bottom: 0.25rem !important;
-            color: #CBD5E1 !important;
+            color: #334155 !important;
         }
 
         /* ── Body Text & Paragraphs ─────────────────────────────────────── */
         p, li {
             font-size: 14px !important;
             line-height: 1.6 !important;
-            color: #94A3B8 !important;
+            color: #334155 !important;
         }
         .stMarkdown p {
             margin-bottom: 0.35rem !important;
         }
         strong, b {
-            color: #F1F5F9 !important;
+            color: #0F172A !important;
             font-weight: 600 !important;
         }
 
@@ -88,21 +88,22 @@ def inject_global_css() -> None:
 
         /* ── KPI Metric Cards ───────────────────────────────────────────── */
         [data-testid="stMetric"] {
-            background-color: #111827 !important;
-            border: 1px solid #1E293B !important;
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
             border-radius: 8px !important;
             padding: 0.65rem 0.85rem !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
         }
         [data-testid="stMetricValue"] {
             font-size: 22px !important;
             font-weight: 700 !important;
-            color: #FFFFFF !important;
+            color: #0F172A !important;
             letter-spacing: -0.2px !important;
         }
         [data-testid="stMetricLabel"] {
             font-size: 12px !important;
             font-weight: 600 !important;
-            color: #94A3B8 !important;
+            color: #64748B !important;
             text-transform: none !important;
             margin-bottom: 2px !important;
         }
@@ -124,30 +125,63 @@ def inject_global_css() -> None:
             line-height: 1.5 !important;
         }
 
-        /* ── Sidebar ────────────────────────────────────────────────────── */
+        /* ── Sidebar (Clean Light Professional) ──────────────────────────── */
         [data-testid="stSidebar"] {
-            background-color: #0E131F !important;
-            border-right: 1px solid #1E293B !important;
+            background-color: #FFFFFF !important;
+            border-right: 1px solid #E2E8F0 !important;
         }
         [data-testid="stSidebar"] label {
             font-size: 13px !important;
             font-weight: 600 !important;
-            color: #CBD5E1 !important;
+            color: #1E293B !important;
         }
         [data-testid="stSidebar"] p {
             font-size: 13px !important;
-            color: #94A3B8 !important;
+            color: #475569 !important;
+        }
+        [data-testid="stSidebar"] h3 {
+            color: #0F172A !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            line-height: 1.35 !important;
+        }
+        [data-testid="stSidebar"] h4 {
+            color: #334155 !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+        }
+        [data-testid="stSidebar"] .stCaption,
+        [data-testid="stSidebar"] small {
+            color: #64748B !important;
         }
         [data-testid="stSidebarNavLink"] {
             font-size: 13.5px !important;
             font-weight: 500 !important;
-            color: #94A3B8 !important;
+            color: #475569 !important;
             border-radius: 6px !important;
         }
+        [data-testid="stSidebarNavLink"]:hover {
+            background-color: #F1F5F9 !important;
+            color: #0F172A !important;
+        }
         [data-testid="stSidebarNavLink"][aria-current="page"] {
-            background-color: #1E293B !important;
-            color: #FFFFFF !important;
+            background-color: #EFF6FF !important;
+            color: #1D4ED8 !important;
             font-weight: 600 !important;
+            border: 1px solid #DBEAFE !important;
+        }
+        [data-testid="stSidebar"] hr {
+            border-color: #E2E8F0 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stAlert"] {
+            background-color: #F8FAFC !important;
+            border: 1px solid #E2E8F0 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stAlert"] p {
+            color: #1E293B !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stAlert"] strong {
+            color: #0F172A !important;
         }
 
         /* ── Inline Code / Badges ───────────────────────────────────────── */
@@ -155,9 +189,9 @@ def inject_global_css() -> None:
             font-size: 12px !important;
             padding: 2px 5px !important;
             border-radius: 4px !important;
-            background-color: #1E293B !important;
-            color: #93C5FD !important;
-            border: 1px solid #334155 !important;
+            background-color: #F1F5F9 !important;
+            color: #1E40AF !important;
+            border: 1px solid #CBD5E1 !important;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
         }
 
@@ -165,7 +199,7 @@ def inject_global_css() -> None:
         .dvn-scroller thead th {
             font-size: 13px !important;
             font-weight: 600 !important;
-            color: #E2E8F0 !important;
+            color: #1E293B !important;
         }
         .dvn-scroller tbody td {
             font-size: 13px !important;
@@ -174,19 +208,20 @@ def inject_global_css() -> None:
         /* ── Expander ───────────────────────────────────────────────────── */
         [data-testid="stExpander"] {
             border-radius: 8px !important;
-            border: 1px solid #1E293B !important;
-            background-color: #111827 !important;
+            border: 1px solid #E2E8F0 !important;
+            background-color: #FFFFFF !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
         }
         [data-testid="stExpander"] summary p {
             font-size: 13.5px !important;
             font-weight: 600 !important;
-            color: #E2E8F0 !important;
+            color: #0F172A !important;
         }
 
         /* ── Divider Spacing ────────────────────────────────────────────── */
         hr {
             margin: 0.6rem 0 !important;
-            border-color: #1E293B !important;
+            border-color: #E2E8F0 !important;
         }
 
         /* ── Buttons ────────────────────────────────────────────────────── */
@@ -215,8 +250,7 @@ def render_sidebar_controls(
     Returns:
         portfolio_id (str) or dict containing scenario parameters.
     """
-    st.sidebar.markdown("### Vision Zero Chicago")
-    st.sidebar.caption("Safety capital investment prioritization")
+    st.sidebar.markdown("### Vision Zero Chicago — Safety Capital Investment Prioritization")
     st.sidebar.markdown("#### Scenario controls")
     st.sidebar.markdown("---")
 

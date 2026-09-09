@@ -302,19 +302,11 @@ class TestStreamlitDashboard:
         assert is_exact is False
         assert row_nearest["portfolio_id"] == "PORT_GRID_BASE_B15M_EQ20"
 
-    def test_what_if_planner_apptest_interaction(self):
-        """AppTest interaction with What-If planner discrete selectors dynamically updates Scenario ID."""
+    def test_portfolio_overview_sidebar_interaction(self):
+        """AppTest interaction with sidebar budget selector dynamically updates active scenario."""
         at = AppTest.from_file(str(PAGES_DIR / "1_Portfolio_Overview.py"), default_timeout=30)
         at.run()
         assert not at.exception
-
-        # Change What-If discrete selectors to $24M, 35% equity by widget key
-        at.selectbox(key="wif_budget_select").select(24000000.0)
-        at.selectbox(key="wif_equity_select").select(0.35)
-        at.run()
-        assert not at.exception
-        info_texts = [i.value for i in at.info]
-        assert any("B24M_EQ35" in text for text in info_texts)
 
         # Switch sidebar budget slider to $25M
         at.select_slider[0].set_value(25000000.0)
@@ -384,29 +376,21 @@ class TestStreamlitDashboard:
         assert (df_all["selected_scenario_count"] <= 192).all()
         assert df_all.duplicated(subset=["corridor_id", "treatment_id"]).sum() == 0
 
-    def test_portfolio_stability_apptest_section_rendering(self):
-        """AppTest verifies Section 3 Portfolio Robustness renders metrics, filters, and tables cleanly (Decision DEC-07)."""
+    def test_portfolio_overview_section_rendering(self):
+        """AppTest verifies Portfolio Overview renders the 4 approved sections and dataframes cleanly."""
         at = AppTest.from_file(str(PAGES_DIR / "1_Portfolio_Overview.py"), default_timeout=30)
         at.run()
         assert not at.exception
 
-        # Check section subheaders present
+        # Check the 4 approved section subheaders are present
         subheaders = [s.value for s in at.subheader]
-        assert "3. Portfolio robustness across scenarios" in subheaders or "4. Portfolio stability and robust project selection" in subheaders
-        assert "5. What-if capital planner" in subheaders
+        assert any("1. Core portfolio metrics" in s for s in subheaders)
+        assert any("2. 2026 corridor risk forecast" in s for s in subheaders)
+        assert any("3. Funded corridors" in s for s in subheaders)
+        assert any("4. Selected projects detail register" in s for s in subheaders)
 
-        # Check dataframes rendered
-        assert len(at.dataframe) >= 3
-
-        # Filter by Core stability tier (selectbox 1)
-        at.selectbox[1].select("Core (selected in most scenarios)")
-        at.run()
-        assert not at.exception
-
-        # Switch scope to All canonical scenarios (selectbox 0)
-        at.selectbox[0].select("All canonical scenarios (36 runs)")
-        at.run()
-        assert not at.exception
+        # Check analytical dataframes rendered (Risk forecast and Project detail register)
+        assert len(at.dataframe) >= 2
 
     def test_shared_formatting_helpers(self):
         """Verify format_equity_flag, format_cost_per_unit, format_plural, and compact formatters behave correctly."""
