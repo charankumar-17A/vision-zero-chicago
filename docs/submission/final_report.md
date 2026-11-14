@@ -664,28 +664,30 @@ Selected corridors, treatment recommendation, capital cost, and expected PV bene
 chosen budget and equity scenario. Portfolio summary: total cost, PV benefit, BCR, equity share.
 Governance audit log: constraints met, warnings, governance labels.
 
-[PENDING SCREENSHOT -- capture Page 1 from live app at vision-zero-chicago-17a.streamlit.app]
+![Executive Recommendation — funded portfolio at a glance](../screenshots/executive_recommendation.png)
 
 ### Page 2 -- Portfolio Overview
 
 Scenario comparison across official budget/equity combinations. PV benefit by scenario, budget
 utilization, equity share vs. floor, Road Diet concentration.
 
-[PENDING SCREENSHOT -- capture Page 2]
+![Portfolio Overview — baseline scenario and core portfolio metrics](../screenshots/portfolio_overview.png)
 
 ### Page 3 -- Corridor Explorer
 
 Corridor-level detail: 2026 forecast crash burden (total and KSI), treatment recommendation and BCR,
 corridor severity history, equity classification.
 
-[PENDING SCREENSHOT -- capture Page 3]
+![Corridor Explorer — citywide investment map and selected projects export table](../screenshots/corridor_explorer_map.png)
+
+![Corridor Explorer — decision rationale for corridor HCC001 (Devon)](../screenshots/corridor_rationale.png)
 
 ### Page 4 -- Governance / Methodology
 
 Full transparency layer: governance warnings from each pipeline stage, assumption register,
 methodology summary, limitations and responsible use statement.
 
-[PENDING SCREENSHOT -- capture Page 4]
+![Governance & Methodology — decision-support guardrails](../screenshots/governance_methodology.png)
 
 ### Testing
 
