@@ -73,6 +73,40 @@ Every stage is guarded by **327 automated acceptance tests** and a mandatory ver
 
 ---
 
+## The analytics behind the numbers
+
+*Every figure below is generated from committed data by [`automation/generate_presentation_figures.py`](automation/generate_presentation_figures.py) — the full gallery regenerates in one command.*
+
+**1. Where the risk concentrates.** Forecast fatal + serious-injury (KSI) burden for 2026 across the 43 high-crash corridors — Pulaski and Lake Shore Drive top the list.
+
+![Top corridors by forecast KSI burden](docs/figures/fig01_top_corridors_2026.png)
+
+**2. Risk × vulnerability.** Corridors in the priority quadrant combine high forecast burden with high social vulnerability — exactly where equity-aware optimization matters.
+
+![Risk vs vulnerability quadrant](docs/figures/fig02_risk_vulnerability_quadrant.png)
+
+**3. Where the $14.99M goes.** The optimizer concentrates capital on the highest-benefit corridors — the top 15 absorb 71% of the budget.
+
+![Portfolio allocation by corridor](docs/figures/fig03_portfolio_allocation.png)
+
+**4. Does the budget bind?** At $15M the ceiling binds (99.9% used, 39 of 43 corridors funded). At $25M+ every corridor can be funded — a documented governance finding, not a limitation.
+
+![Budget sensitivity](docs/figures/fig04_budget_sensitivity.png)
+
+**5. Equity floors are over-delivered.** The unconstrained optimum sends 47.4% of capital into high-vulnerability communities — above every tested floor (20–40%).
+
+![Equity delivery](docs/figures/fig05_equity_delivery.png)
+
+**6. Model bake-off.** Four candidate models per target, selected on validation Poisson deviance across 516 corridor-months — not on a single lucky split.
+
+![Model bake-off](docs/figures/fig06_model_bakeoff.png)
+
+**7. The forecast tracks history.** Calibrated 2026 KSI forecasts agree almost perfectly with the empirical Bayes benchmark in rank (Spearman ρ = 0.994).
+
+![Forecast calibration](docs/figures/fig07_forecast_calibration.png)
+
+---
+
 ## Project Purpose
 
 Chicago has a limited road-safety budget and cannot fund every high-crash
@@ -145,7 +179,7 @@ Scenarios are planning tools. They are not official City of Chicago budget commi
 
 - `config/` — Project configurations, spatial thresholds, CMF parameters, and cleaning rules
 - `data/` — Data pipeline storage (immutable `raw/`, staged `interim/`, validated `processed/`)
-- `docs/` — Decision register (`decision_log.csv`), methodological contracts, and run-level validation JSONs
+- `docs/` — Decision register (`decision_log.csv`), methodological contracts, run-level validation JSONs, and the README assets (`screenshots/`, `figures/`, curated `analysis_data/` extracts)
 - `notebooks/` — Reproducible exploratory data analysis and spatial/portfolio diagnostics
   (01 crash EDA, 02 corridor profiles, 03 feature importance, 04 spatial analysis,
   05 portfolio comparison, 08 treatment diversity diagnostic, 09 hindsight backtest)
@@ -163,7 +197,7 @@ Scenarios are planning tools. They are not official City of Chicago budget commi
     includes 2026 pre-treatment crash forecast baseline context, ranked corridor risk table,
     live MILP portfolio optimizer, scenario sensitivity analysis, and governance audit log
   - `dashboard/powerbi/` — Power BI template and workbook documentation
-- `automation/` — Verification scripts and automated pipeline orchestration
+- `automation/` — Verification scripts, automated pipeline orchestration, and reproducible presentation-figure generation
 - `reports/` — Authoritative technical report (`vision_zero_technical_report.md`)
 - `outputs/` — Generated forecasts, summary tables, figures, and execution logs
 

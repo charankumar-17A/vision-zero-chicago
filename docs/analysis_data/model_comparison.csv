@@ -1,0 +1,9 @@
+target,model_name,is_selected_winner,val_row_count,val_actual_total,val_predicted_total,val_mae,val_rmse,val_poisson_deviance,val_mean_bias,val_calibration_ratio,val_spearman_rank_corr,test_row_count,test_actual_total,test_predicted_total,test_mae,test_rmse,test_poisson_deviance,test_mean_bias,test_calibration_ratio,test_spearman_rank_corr
+total_crashes,seasonal_naive_lag12,False,516,14496.0,14090.0,6.4186,8.7362,2.662941,-0.7868,0.972,0.985,,,,,,,,,
+total_crashes,historical_rolling_mean_12,True,516,14496.0,14269.3,5.2238,7.4308,1.647809,-0.4393,0.9844,0.9954,516.0,13764.0,14182.6,5.392,7.364,1.778988,0.8112,1.0304,0.9876
+total_crashes,poisson_regression,False,516,14496.0,14706.5,5.6736,8.4224,1.975266,0.4079,1.0145,0.9844,,,,,,,,,
+total_crashes,negative_binomial_glm,False,516,14496.0,14385.5,5.4191,8.343,1.757873,-0.2141,0.9924,0.987,,,,,,,,,
+ksi_crashes,seasonal_naive_lag12,False,516,256.0,304.0,0.6899,1.0602,7.245903,0.093,1.1875,0.7657,,,,,,,,,
+ksi_crashes,historical_rolling_mean_12,False,516,256.0,283.5,0.5869,0.7743,1.223959,0.0533,1.1074,0.9087,,,,,,,,,
+ksi_crashes,poisson_regression,False,516,256.0,297.2,0.6106,0.7573,1.0235,0.0799,1.1611,0.8985,,,,,,,,,
+ksi_crashes,negative_binomial_glm,True,516,256.0,322.2,0.595,0.7703,0.987885,0.1282,1.2584,0.8185,516.0,236.0,272.3,0.5262,0.6664,0.893439,0.0704,1.1539,0.8287
