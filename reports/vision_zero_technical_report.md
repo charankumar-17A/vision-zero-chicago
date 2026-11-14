@@ -29,6 +29,10 @@ Chicago cannot fund every high-crash corridor at once. This project builds a tra
 - **Aggregate Candidate-Pool BCR**: **~245:1**.
 - *Important Distinction*: These candidate-pool figures represent the gross evaluation universe and must **not** be confused with the selected baseline portfolio recommendation ($14.99M cost, $4.00B PV benefit, 267.12:1 BCR).
 
+### Presentation Assets
+
+The README figure gallery ([`docs/figures/`](../docs/figures/)) is generated from committed data by `python automation/generate_presentation_figures.py` — covering corridor risk concentration, the risk-vulnerability quadrant, capital allocation, budget sensitivity, equity delivery, model selection, and forecast calibration.
+
 ---
 
 ## 2. Business Problem & Governance Boundary
