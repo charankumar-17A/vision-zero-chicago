@@ -1,4 +1,3 @@
-
 """Build the high-crash corridor register CSV from config/corridors.yml.
 
 This script has one responsibility: read the corridor definitions from

@@ -26,8 +26,7 @@ import numpy as np
 import pandas as pd
 import shapely
 import yaml
-from pyp
-roj import CRS
+from pyproj import CRS
 from shapely.strtree import STRtree
 
 ROOT = Path(__file__).resolve().parents[2]
