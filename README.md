@@ -5,7 +5,7 @@
 > A data-driven decision-support tool aligned with the City of Chicago's Vision Zero goals.
 > Final project selection authority remains with City staff and qualified transportation-engineering teams.
 
-**Live dashboard:** [vision-zero-chicago-charan.streamlit.app](https://vision-zero-chicago-charan.streamlit.app/)
+**Live dashboard:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
 
 ## Project Purpose
 

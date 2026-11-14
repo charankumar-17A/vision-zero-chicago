@@ -12,7 +12,7 @@
 | **Program** | Data Analytics G1 |
 | **Organization** | SURE Trust (Skill Upgradation for Rural-youth Empowerment Trust) |
 | **Submission Date** | September 2026 |
-| **Live Dashboard** | [vision-zero-chicago-charan.streamlit.app](https://vision-zero-chicago-charan.streamlit.app/) |
+| **Live Dashboard** | [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/) |
 | **GitHub Repository** | [CharanKumar17-a/vision-zero-chicago](https://github.com/CharanKumar17-a/vision-zero-chicago) |
 
 ---
@@ -653,7 +653,7 @@ Degree-based distance calculation is explicitly prohibited.
 
 ## 19. Streamlit Application
 
-**URL:** [vision-zero-chicago-charan.streamlit.app](https://vision-zero-chicago-charan.streamlit.app/)
+**URL:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
 
 The Streamlit application provides an interactive interface for planners and stakeholders to
 explore portfolio results and run custom scenarios.
@@ -664,7 +664,7 @@ Selected corridors, treatment recommendation, capital cost, and expected PV bene
 chosen budget and equity scenario. Portfolio summary: total cost, PV benefit, BCR, equity share.
 Governance audit log: constraints met, warnings, governance labels.
 
-[PENDING SCREENSHOT -- capture Page 1 from live app at vision-zero-chicago-charan.streamlit.app]
+[PENDING SCREENSHOT -- capture Page 1 from live app at vision-zero-chicago-17a.streamlit.app]
 
 ### Page 2 -- Portfolio Overview
 
@@ -1001,7 +1001,7 @@ not to replace them.
 
 ## 29. GitHub and Project Resources
 
-**Live Streamlit Dashboard:** [vision-zero-chicago-charan.streamlit.app](https://vision-zero-chicago-charan.streamlit.app/)
+**Live Streamlit Dashboard:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
 
 **GitHub Repository:** [CharanKumar17-a/vision-zero-chicago](https://github.com/CharanKumar17-a/vision-zero-chicago)
 

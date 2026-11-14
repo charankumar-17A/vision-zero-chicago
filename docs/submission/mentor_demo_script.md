@@ -19,7 +19,7 @@ This walkthrough provides a structured, 5–8 minute demonstration script for pr
 
 ## 2. Executive Recommendation & Baseline Portfolio (2 Minutes)
 
-*Navigate to the Executive Recommendation page (`https://vision-zero-chicago-charan.streamlit.app/`).*
+*Navigate to the Executive Recommendation page (`https://vision-zero-chicago-17a.streamlit.app/`).*
 
 - **Point out the Baseline Policy Scenario** (`PORT_OFF_BASE_B15M_EQ20`):
   - **Planning Budget**: $15.0M

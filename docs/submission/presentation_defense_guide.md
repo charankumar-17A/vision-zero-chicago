@@ -327,7 +327,7 @@ This document is your master playbook for presentations, capstone defense, and t
 ## 12. Live Streamlit Web Application Walkthrough (Final Report §19)
 
 ### Visual / Slide
-- **Live Browser / Mockup:** Walkthrough of the 4 deployed pages on [vision-zero-chicago-charan.streamlit.app](https://vision-zero-chicago-charan.streamlit.app/).
+- **Live Browser / Mockup:** Walkthrough of the 4 deployed pages on [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/).
 
 ### Spoken Script (Page by Page)
 
