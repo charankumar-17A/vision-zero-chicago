@@ -1,11 +1,77 @@
 # Chicago Road Safety Investment Prioritizer
 
-### Vision Zero Chicago — Road Safety Investment Decision Support
+**Vision Zero Chicago — road-safety investment decision support**
 
-> A data-driven decision-support tool aligned with the City of Chicago's Vision Zero goals.
-> Final project selection authority remains with City staff and qualified transportation-engineering teams.
+[![CI & Governance Verifier Gate](https://github.com/charankumar-17A/vision-zero-chicago/actions/workflows/ci.yml/badge.svg)](https://github.com/charankumar-17A/vision-zero-chicago/actions/workflows/ci.yml)
+[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-Streamlit%20Cloud-FF4B4B?logo=streamlit&logoColor=white)](https://vision-zero-chicago-17a.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-327%20passing-brightgreen)](https://github.com/charankumar-17A/vision-zero-chicago/actions)
 
-**Live dashboard:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
+> Chicago can't fund every high-crash corridor. This tool makes the trade-offs **transparent, measurable, and auditable** — instead of a gut-feeling wish list.
+
+**🖥 Live dashboard:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
+
+---
+
+## What this does in 30 seconds
+
+1. **Forecasts** where crashes are headed — a validated 2026 crash forecast for each of Chicago's 43 official high-crash corridors.
+2. **Matches** every corridor with the treatment most likely to reduce harm there, using federal Crash Modification Factors (CMFs).
+3. **Optimizes** the fundable portfolio — a mathematical program (MILP) selects the best mix of projects under a $15M budget ceiling and a 20% equity-spending floor.
+4. **Shows its work** — every assumption, validation check, and governance warning is published on a public dashboard for engineering review.
+
+> ⚠️ This is decision **support**, not decision **authority**. Final project selection remains with City staff and qualified transportation-engineering teams.
+
+## Headline results
+
+*Baseline scenario: $15M budget · 20% equity floor · Base cost · Base CMF — as verified in the live dashboard and the final report.*
+
+| Result | Verified value |
+|---|---|
+| Corridors funded | **39 of 43** |
+| Capital allocated | **$14.99M** — 99.9% of the $15M budget (binding) |
+| Spend directed to high-vulnerability (SVI) communities | **47.4%** (floor was 20%) |
+| Fatal & serious-injury (KSI) crashes avoided | **≈ 48 per year** |
+| Total crashes avoided | **≈ 2,170 per year** |
+| 20-year present-value safety benefit | **$4.00B** |
+| Portfolio benefit-cost ratio | **267 : 1** |
+
+💡 At $25M or $40M budgets, all 43 corridors can be funded — the $15M scenario is the only one where the budget binds and forces real trade-offs. That is a documented governance finding, not a limitation.
+
+## How it works
+
+```mermaid
+flowchart LR
+    A["📥 Verify<br/>Freeze and clean Chicago<br/>open crash data"] --> B["🧠 Forecast<br/>Predict 2026 crashes<br/>for all 43 corridors"]
+    B --> C["⚖️ Optimize<br/>MILP portfolio under<br/>budget and equity rules"]
+    C --> D["📊 Decide<br/>Dashboard and export<br/>for engineering review"]
+```
+
+Every stage is guarded by **327 automated acceptance tests** and a mandatory verification protocol — the same checks that gate every push in CI (badge above).
+
+## Inside the dashboard
+
+**Executive Recommendation — the funded portfolio at a glance**
+
+![Executive Recommendation page](docs/screenshots/executive_recommendation.png)
+
+**Portfolio Overview — where the $14.99M goes, and how scenarios shift it**
+
+![Portfolio Overview page](docs/screenshots/portfolio_overview.png)
+
+**Corridor Explorer — corridor drilldown with decision rationale, the citywide investment map, and the export table**
+
+![Corridor Explorer map and export table](docs/screenshots/corridor_explorer_map.png)
+
+**Every recommendation ships with its measurable rationale** — e.g. corridor HCC001 (Devon): *selected by the active portfolio optimization, estimated 1.6 avoided KSI/year at a planning-level BCR of 292.4:1*
+
+![Corridor decision rationale](docs/screenshots/corridor_rationale.png)
+
+**Governance & Methodology — guardrails before charts: purpose, limitations, authority, engineering status**
+
+![Governance and Methodology page](docs/screenshots/governance_methodology.png)
+
+---
 
 ## Project Purpose
 
@@ -27,7 +93,7 @@ Final project selection remains with the City and qualified transportation-engin
 Which combination of corridor-level road-safety projects should be shortlisted
 for engineering review under a limited budget and an equity requirement?
 
-## Analytical Workflow
+## Full Analytical Workflow
 
 1. Verify and freeze source data.
 2. Clean crash and supporting datasets.
@@ -113,10 +179,30 @@ Scenarios are planning tools. They are not official City of Chicago budget commi
 | FHWA Crash Modification Factors | Federal Highway Administration | Treatment effectiveness evidence |
 | FHWA Proven Safety Countermeasures | Federal Highway Administration | Treatment eligibility framework |
 
-## Local Setup
+## Run It Locally
 
-Open PowerShell in the project directory:
+**Prerequisites:** Python 3.13 and Git.
 
 ```powershell
-Set-Location "D:\data-analytics\vision-zero-chicago"
+git clone https://github.com/charankumar-17A/vision-zero-chicago.git
+cd vision-zero-chicago
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-lock.txt
+
+# run the full acceptance suite (the same gate used in CI)
+python -m pytest -q
+
+# launch the dashboard locally
+streamlit run dashboard/streamlit/app.py
 ```
+
+CI additionally runs `automation/verify_project.ps1` — the project's mandatory
+governance verification protocol.
+
+## Governance & Responsible Use
+
+- The system **supports** decision-making; it does not automatically approve, authorize, or fund projects.
+- Final project selection remains with the City and qualified transportation-engineering teams.
+- All figures are planning estimates built on provisional unit costs, national CMF evidence, and physical-applicability assumptions not verified by engineering field survey.
+- The method, assumptions, limitations, and governance warnings are published and auditable — the analysis is designed to be engaged with, not accepted as a black box.

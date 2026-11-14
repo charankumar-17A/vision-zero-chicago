@@ -69,3 +69,5 @@ reports/*_trace.json
 !outputs/recommendations/.gitkeep
 !outputs/logs/.gitkeep
 !outputs/models/.gitkeep
+# Agent workflow files
+.agents/

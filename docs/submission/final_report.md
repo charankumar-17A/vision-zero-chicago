@@ -13,7 +13,7 @@
 | **Organization** | SURE Trust (Skill Upgradation for Rural-youth Empowerment Trust) |
 | **Submission Date** | September 2026 |
 | **Live Dashboard** | [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/) |
-| **GitHub Repository** | [CharanKumar17-a/vision-zero-chicago](https://github.com/CharanKumar17-a/vision-zero-chicago) |
+| **GitHub Repository** | [charankumar-17A/vision-zero-chicago](https://github.com/charankumar-17A/vision-zero-chicago) |
 
 ---
 
@@ -1003,7 +1003,7 @@ not to replace them.
 
 **Live Streamlit Dashboard:** [vision-zero-chicago-17a.streamlit.app](https://vision-zero-chicago-17a.streamlit.app/)
 
-**GitHub Repository:** [CharanKumar17-a/vision-zero-chicago](https://github.com/CharanKumar17-a/vision-zero-chicago)
+**GitHub Repository:** [charankumar-17A/vision-zero-chicago](https://github.com/charankumar-17A/vision-zero-chicago)
 
 ### Key Output Files
 
